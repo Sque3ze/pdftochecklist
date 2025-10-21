@@ -1,0 +1,4 @@
+built_scripts/
+.venv/
+.DS_Store
+__pycache__/

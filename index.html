@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Checklist Showcase</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: #f9fafb;
+            color: #1f2933;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, #ffffff 0%, #f0f4fb 55%, #e5ecf7 100%);
+            align-items: center;
+        }
+
+        header {
+            width: min(1280px, 100%);
+            padding: clamp(1rem, 4vw, 1.75rem) clamp(1.25rem, 4vw, 2rem);
+            text-align: center;
+            color: #0f2747;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: clamp(1.65rem, 3vw, 2rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        main {
+            width: min(1280px, 100%);
+            flex: 1;
+            padding: clamp(1.2rem, 4vw, 2.8rem);
+            display: grid;
+            gap: 1.9rem;
+        }
+
+        .viewer {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: clamp(1.35rem, 3vw, 2rem);
+            align-items: stretch;
+        }
+
+        @media (min-width: 1024px) {
+            .viewer {
+                grid-template-columns: minmax(0, 1.3fr) auto minmax(0, 1.3fr);
+                align-items: center;
+            }
+        }
+
+        .panel {
+            border-radius: 1rem;
+            padding: clamp(1rem, 2.2vw, 1.4rem);
+            box-shadow: 0 30px 45px -40px rgba(12, 50, 92, 0.75);
+            background-color: #ffffff;
+            display: grid;
+            gap: 1rem;
+            border: 1px solid rgba(15, 76, 129, 0.12);
+        }
+
+        .panel h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #103f7a;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .panel iframe {
+            width: 100%;
+            min-height: 420px;
+            height: min(82vh, 680px);
+            border: 1px solid rgba(15, 76, 129, 0.18);
+            border-radius: 0.65rem;
+            box-shadow: inset 0 0 0 1px rgba(15, 37, 71, 0.06);
+            background-color: #fdfdfd;
+        }
+
+        .panel .placeholder {
+            padding: clamp(1.5rem, 3vw, 2.2rem);
+            border: 2px dashed rgba(15, 76, 129, 0.28);
+            border-radius: 0.75rem;
+            text-align: center;
+            color: #46566c;
+            background: rgba(15, 76, 129, 0.03);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: linear-gradient(135deg, #1c2c54, #0f4c81);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.65rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .nav button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .nav button:not(:disabled):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -14px rgba(15, 76, 129, 0.8);
+        }
+
+        .nav .summary {
+            flex: 1;
+            min-width: clamp(18ch, 35vw, 24ch);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #0f4c81;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+            background: none;
+        }
+
+        .summary strong {
+            display: block;
+            width: 100%;
+            text-align: center;
+            font-size: 1.05rem;
+            color: #0f4c81;
+        }
+
+        footer {
+            width: min(1280px, 100%);
+            padding: 1rem clamp(1rem, 4vw, 2rem);
+            color: #52606d;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        a {
+            color: inherit;
+        }
+        .direction {
+            display: none;
+        }
+
+        .direction .arrow {
+            display: grid;
+            place-items: center;
+            color: #0f4c81;
+            font-size: 2.6rem;
+        }
+
+        .direction p {
+            margin-top: 0.8rem;
+            text-align: center;
+            color: #3b4d65;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @media (min-width: 1024px) {
+            .direction {
+                display: grid;
+                justify-items: center;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .direction {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #0f4c81;
+                font-weight: 600;
+                gap: 0.5rem;
+                padding: 0.3rem 0;
+            }
+
+            .direction .arrow {
+                font-size: 2.2rem;
+            }
+
+            .direction p {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Health Alliance Policy to Checklist</h1>
+    </header>
+
+    <main>
+        <div class="nav">
+            <button id="prev-btn" type="button">⟵ Previous</button>
+            <div class="summary">
+                <strong id="pair-title">Select a policy</strong>
+            </div>
+            <button id="next-btn" type="button">Next ⟶</button>
+        </div>
+
+        <div class="viewer">
+            <section class="panel">
+                <h2>Original PDF</h2>
+                <div id="original-view"></div>
+            </section>
+            <div class="direction" aria-hidden="true">
+                <div class="arrow">➜</div>
+                <p>transforms into</p>
+            </div>
+            <section class="panel">
+                <h2>Checklist Version</h2>
+                <div id="checklist-view"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <script src="pairs.js"></script>
+    <script>
+        const pairs = Array.isArray(window.POLICY_PAIRS) ? window.POLICY_PAIRS : [];
+
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const originalView = document.getElementById("original-view");
+        const checklistView = document.getElementById("checklist-view");
+        const pairTitle = document.getElementById("pair-title");
+
+        let currentIndex = 0;
+
+        function renderPlaceholder(container, label, path) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "placeholder";
+            wrapper.innerHTML = `
+                <strong>${label}</strong>
+                <p>${path}</p>
+                <p><em>File not found – drop it into this repo to enable preview.</em></p>
+            `;
+            container.replaceChildren(wrapper);
+        }
+
+        function renderIframe(container, path) {
+            const iframe = document.createElement("iframe");
+            const encoded = encodeURI(path);
+            const source = encoded.includes("#") ? encoded : `${encoded}#zoom=page-width`;
+            iframe.src = source;
+            iframe.title = "PDF preview";
+            iframe.loading = "lazy";
+            container.replaceChildren(iframe);
+        }
+
+        function updateNavigation() {
+            prevBtn.disabled = currentIndex <= 0;
+            nextBtn.disabled = currentIndex >= pairs.length - 1;
+        }
+
+        async function fileExists(path) {
+            if (window.location.protocol === "file:") {
+                // Browsers block fetch("file://..."), so assume local files exist
+                return true;
+            }
+            try {
+                const response = await fetch(path, { method: "HEAD" });
+                if (response.ok) {
+                    return true;
+                }
+                if (response.status === 405) {
+                    // Some servers disallow HEAD but serve the file fine.
+                    return true;
+                }
+                if (response.type === "opaque") {
+                    // Cross-origin fetch that we can't inspect; optimistically assume success.
+                    return true;
+                }
+                return false;
+            } catch (err) {
+                console.warn("HEAD request failed for", path, err);
+                // When we cannot verify (e.g., CORS), err on the side of displaying the iframe.
+                return true;
+            }
+        }
+
+        async function renderPair() {
+            const pair = pairs[currentIndex];
+            pairTitle.textContent = pair.title;
+
+            const [hasOriginal, hasChecklist] = await Promise.all([
+                fileExists(pair.original),
+                fileExists(pair.checklist)
+            ]);
+
+            if (hasOriginal) {
+                renderIframe(originalView, pair.original);
+            } else {
+                renderPlaceholder(originalView, "Original PDF missing", pair.original);
+            }
+
+            if (hasChecklist) {
+                renderIframe(checklistView, pair.checklist);
+            } else {
+                renderPlaceholder(checklistView, "Checklist PDF missing", pair.checklist);
+            }
+
+            updateNavigation();
+        }
+
+        prevBtn.addEventListener("click", () => {
+            if (currentIndex > 0) {
+                currentIndex -= 1;
+                renderPair();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            if (currentIndex < pairs.length - 1) {
+                currentIndex += 1;
+                renderPair();
+            }
+        });
+
+        if (pairs.length > 0) {
+            renderPair();
+        } else {
+            pairTitle.textContent = "No policies detected";
+            renderPlaceholder(originalView, "Original PDF", "No file provided");
+            renderPlaceholder(checklistView, "Checklist PDF", "No file provided");
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            console.warn(
+                "No PDF pairs were loaded. Run 'python3 generate_pairs_manifest.py' to rebuild pairs.js."
+            );
+        }
+    </script>
+</body>
+</html>
