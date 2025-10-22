@@ -105,7 +105,7 @@
         }
 
         .nav .summary {
-            flex: 1;
+            flex: 1 1 clamp(18ch, 35vw, 24ch);
             min-width: clamp(18ch, 35vw, 24ch);
             display: flex;
             align-items: center;
@@ -121,6 +121,109 @@
             width: 100%;
             text-align: center;
             white-space: pre-wrap;
+        }
+
+        .search {
+            position: relative;
+            min-width: clamp(220px, 26vw, 340px);
+            flex: 1 1 clamp(220px, 26vw, 340px);
+            display: flex;
+            justify-content: center;
+        }
+
+        .search input {
+            width: 100%;
+            appearance: none;
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            padding: 0.55rem 1.1rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background: #ffffff;
+            box-shadow: inset 0 1px 2px rgba(14, 58, 93, 0.05);
+        }
+
+        .search input:focus {
+            outline: none;
+            border-color: var(--brand-accent);
+            box-shadow: 0 0 0 3px rgba(31, 120, 180, 0.18);
+        }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 0.4rem);
+            left: 0;
+            right: 0;
+            display: none;
+            list-style: none;
+            margin: 0;
+            padding: 0.35rem 0;
+            background: #ffffff;
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.9rem;
+            box-shadow: 0 18px 38px -24px rgba(14, 58, 93, 0.35);
+            max-height: 16rem;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .search.open .search-results {
+            display: block;
+        }
+
+        .search-results li {
+            margin: 0;
+        }
+
+        .search-results button {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: left;
+            padding: 0.55rem 1rem;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .search-results button:hover,
+        .search-results button:focus {
+            background: rgba(31, 120, 180, 0.12);
+            outline: none;
+        }
+
+        .search-results .empty {
+            padding: 0.55rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 720px) {
+            .nav {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .nav button {
+                width: 100%;
+            }
+
+            .nav .summary,
+            .search {
+                width: 100%;
+            }
         }
 
         .viewer {
@@ -278,6 +381,11 @@
             <div class="summary">
                 <strong id="pair-title">Select a policy</strong>
             </div>
+            <div class="search" id="search-container">
+                <label class="visually-hidden" for="policy-search">Search policies</label>
+                <input id="policy-search" type="search" placeholder="Search policies…" autocomplete="off">
+                <ul id="search-results" class="search-results" role="listbox"></ul>
+            </div>
             <button id="next-btn" type="button">Next ⟶</button>
         </div>
 
@@ -308,8 +416,13 @@
         const originalView = document.getElementById("original-view");
         const checklistView = document.getElementById("checklist-view");
         const pairTitle = document.getElementById("pair-title");
+        const searchContainer = document.getElementById("search-container");
+        const searchInput = document.getElementById("policy-search");
+        const searchResults = document.getElementById("search-results");
+        const MAX_RESULTS = 10;
 
         let currentIndex = 0;
+        let hideResultsTimeout = null;
 
         function renderPlaceholder(container, label, path) {
             const wrapper = document.createElement("div");
@@ -387,22 +500,171 @@
             updateNavigation();
         }
 
-        prevBtn.addEventListener("click", () => {
-            if (currentIndex > 0) {
-                currentIndex -= 1;
-                renderPair();
+        function goToPair(index) {
+            if (index < 0 || index >= pairs.length) {
+                return;
             }
-        });
+            currentIndex = index;
+            hideResults();
+            if (searchInput) {
+                searchInput.value = "";
+            }
+            renderPair();
+        }
 
-        nextBtn.addEventListener("click", () => {
-            if (currentIndex < pairs.length - 1) {
-                currentIndex += 1;
-                renderPair();
+        function scheduleHideResults() {
+            if (!searchContainer) {
+                return;
+            }
+            clearTimeout(hideResultsTimeout);
+            hideResultsTimeout = window.setTimeout(() => {
+                searchContainer.classList.remove("open");
+            }, 150);
+        }
+
+        function showResults(matches) {
+            if (!searchContainer || !searchResults) {
+                return;
+            }
+            clearTimeout(hideResultsTimeout);
+            searchResults.innerHTML = "";
+            if (!matches.length) {
+                const empty = document.createElement("li");
+                empty.className = "empty";
+                empty.textContent = "No matching policies";
+                searchResults.appendChild(empty);
+            } else {
+                matches.forEach(({ title, index }) => {
+                    const li = document.createElement("li");
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.dataset.index = String(index);
+                    button.setAttribute("role", "option");
+                    button.setAttribute("aria-selected", "false");
+                    button.textContent = title;
+                    li.appendChild(button);
+                    searchResults.appendChild(li);
+                });
+            }
+            searchContainer.classList.add("open");
+        }
+
+        function hideResults() {
+            if (!searchContainer) {
+                return;
+            }
+            clearTimeout(hideResultsTimeout);
+            searchContainer.classList.remove("open");
+        }
+
+        function getMatches(query) {
+            if (!pairs.length) {
+                return [];
+            }
+            const trimmed = query.trim().toLowerCase();
+            const matches = [];
+            for (let i = 0; i < pairs.length; i += 1) {
+                const title = pairs[i].title;
+                if (!trimmed || title.toLowerCase().includes(trimmed)) {
+                    matches.push({ title, index: i });
+                }
+                if (matches.length >= MAX_RESULTS) {
+                    break;
+                }
+            }
+            return matches;
+        }
+
+        function handleSearchInput() {
+            if (!searchInput) {
+                return;
+            }
+            const matches = getMatches(searchInput.value);
+            if (matches.length === 0 && !searchInput.value.trim()) {
+                hideResults();
+                return;
+            }
+            showResults(matches);
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener("click", () => {
+                goToPair(currentIndex - 1);
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener("click", () => {
+                goToPair(currentIndex + 1);
+            });
+        }
+
+        if (searchResults) {
+            searchResults.addEventListener("click", (event) => {
+                const button = event.target.closest("button[data-index]");
+                if (!button) {
+                    return;
+                }
+                const index = Number.parseInt(button.dataset.index, 10);
+                goToPair(index);
+                hideResults();
+                if (searchInput) {
+                    searchInput.blur();
+                }
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener("input", () => {
+                handleSearchInput();
+            });
+
+            searchInput.addEventListener("focus", () => {
+                handleSearchInput();
+                searchInput.select();
+            });
+
+            searchInput.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    const firstButton = searchResults?.querySelector("button[data-index]");
+                    if (firstButton) {
+                        event.preventDefault();
+                        const index = Number.parseInt(firstButton.dataset.index, 10);
+                        goToPair(index);
+                        hideResults();
+                        searchInput.blur();
+                    }
+                } else if (event.key === "Escape") {
+                    hideResults();
+                    searchInput.blur();
+                }
+            });
+
+            searchInput.addEventListener("blur", scheduleHideResults);
+        }
+
+        if (searchContainer) {
+            searchContainer.addEventListener("mouseenter", () => {
+                clearTimeout(hideResultsTimeout);
+            });
+            searchContainer.addEventListener("mouseleave", scheduleHideResults);
+        }
+
+        document.addEventListener("click", (event) => {
+            if (!searchContainer) {
+                return;
+            }
+            if (!searchContainer.contains(event.target) && event.target !== searchInput) {
+                hideResults();
             }
         });
 
         if (pairs.length > 0) {
             renderPair();
+            if (searchInput) {
+                searchInput.disabled = false;
+                searchInput.placeholder = "Search policies…";
+            }
         } else {
             pairTitle.textContent = "No policies detected";
             renderPlaceholder(originalView, "Original PDF", "No file provided");
@@ -412,6 +674,11 @@
             console.warn(
                 "No PDF pairs were loaded. Run 'python3 generate_pairs_manifest.py' to rebuild pairs.js."
             );
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.disabled = true;
+                searchInput.placeholder = "No policies available";
+            }
         }
     </script>
 </body>
