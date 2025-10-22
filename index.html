@@ -30,25 +30,47 @@
 
         header {
             width: min(1280px, 100%);
-            padding: clamp(0.9rem, 3vw, 1.4rem) clamp(1.25rem, 4vw, 2.5rem);
-            color: #ffffff;
-            background: linear-gradient(135deg, var(--brand-primary), #143e63);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 0 0 1.25rem 1.25rem;
-            box-shadow: 0 22px 46px -36px rgba(14, 58, 93, 0.6);
+            padding: clamp(0.9rem, 3vw, 1.35rem) clamp(1.25rem, 4vw, 2.5rem);
+            background: var(--surface);
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(20, 47, 69, 0.12);
+            box-shadow: 0 16px 38px -28px rgba(14, 58, 93, 0.45);
+            display: flex;
+            align-items: center;
+            gap: clamp(1rem, 3.5vw, 1.75rem);
         }
 
         header h1 {
             margin: 0;
-            font-size: clamp(1.45rem, 2.8vw, 1.95rem);
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
+            font-size: clamp(1.25rem, 2.8vw, 1.75rem);
             font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
-        header h1 .accent {
-            color: #cbe3ff;
-            letter-spacing: 0.08em;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.75rem, 2.5vw, 1.2rem);
+        }
+
+        .brand-mark {
+            width: clamp(124px, 18vw, 188px);
+            height: auto;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .brand-tagline {
+            margin: 0;
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+            font-weight: 600;
         }
 
         main {
@@ -259,15 +281,6 @@
             font-weight: 600;
         }
 
-        .panel h2 span {
-            display: block;
-            margin-top: 0.2rem;
-            font-size: 0.78rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
         .panel iframe {
             width: 100%;
             min-height: 420px;
@@ -372,14 +385,20 @@
 </head>
 <body>
     <header>
-        <h1>Health Alliance <span class="accent">Policy to Checklist</span></h1>
+        <div class="brand">
+            <img class="brand-mark" src="built_scripts/masterlogo.png" alt="Health Alliance logo">
+            <div class="brand-text">
+                <h1>Pharmacy Drug Policy &amp; Procedure</h1>
+                <p class="brand-tagline">Policy to Checklist</p>
+            </div>
+        </div>
     </header>
 
     <main>
         <div class="nav">
             <button id="prev-btn" type="button">⟵ Previous</button>
             <div class="summary">
-                <strong id="pair-title">Select a policy</strong>
+                <strong id="pair-title">Current Policy: Select a policy</strong>
             </div>
             <div class="search" id="search-container">
                 <label class="visually-hidden" for="policy-search">Search policies</label>
@@ -391,7 +410,7 @@
 
         <div class="viewer">
             <section class="panel">
-                <h2>Original Policy<span>Source PDF</span></h2>
+                <h2>Policy PDF</h2>
                 <div id="original-view"></div>
             </section>
             <div class="direction" aria-hidden="true">
@@ -399,7 +418,7 @@
                 <p>Checklist Conversion</p>
             </div>
             <section class="panel">
-                <h2>Checklist Output<span>Checklist PDF</span></h2>
+                <h2>Checklist Version</h2>
                 <div id="checklist-view"></div>
             </section>
         </div>
@@ -478,7 +497,7 @@
 
         async function renderPair() {
             const pair = pairs[currentIndex];
-            pairTitle.textContent = pair.title;
+            pairTitle.textContent = `Current Policy: ${pair.title}`;
 
             const [hasOriginal, hasChecklist] = await Promise.all([
                 fileExists(pair.original),
@@ -666,7 +685,7 @@
                 searchInput.placeholder = "Search policies…";
             }
         } else {
-            pairTitle.textContent = "No policies detected";
+            pairTitle.textContent = "Current Policy: No policies detected";
             renderPlaceholder(originalView, "Original PDF", "No file provided");
             renderPlaceholder(checklistView, "Checklist PDF", "No file provided");
             prevBtn.disabled = true;
