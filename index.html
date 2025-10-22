@@ -6,10 +6,17 @@
     <title>Policy Checklist Showcase</title>
     <style>
         :root {
-            color-scheme: light dark;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background-color: #f9fafb;
-            color: #1f2933;
+            color-scheme: light;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --brand-primary: #0e3a5d;
+            --brand-accent: #1f78b4;
+            --surface: #ffffff;
+            --surface-alt: #f7f9fc;
+            --border-subtle: #d6deea;
+            --text-primary: #142f45;
+            --text-muted: #5b6f82;
+            background-color: #e8eef6;
+            color: var(--text-primary);
         }
 
         body {
@@ -17,82 +24,45 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(180deg, #ffffff 0%, #f0f4fb 55%, #e5ecf7 100%);
             align-items: center;
+            background: radial-gradient(circle at top, #f2f6fb 0%, #e5ecf5 45%, #dfe6f1 100%);
         }
 
         header {
             width: min(1280px, 100%);
-            padding: clamp(1rem, 4vw, 1.75rem) clamp(1.25rem, 4vw, 2rem);
-            text-align: center;
-            color: #0f2747;
+            padding: clamp(0.9rem, 3vw, 1.4rem) clamp(1.25rem, 4vw, 2.5rem);
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--brand-primary), #143e63);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 0 0 1.25rem 1.25rem;
+            box-shadow: 0 22px 46px -36px rgba(14, 58, 93, 0.6);
         }
 
         header h1 {
             margin: 0;
-            font-size: clamp(1.65rem, 3vw, 2rem);
-            letter-spacing: 0.08em;
+            font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             font-weight: 700;
+        }
+
+        header h1 .accent {
+            color: #cbe3ff;
+            letter-spacing: 0.08em;
         }
 
         main {
             width: min(1280px, 100%);
             flex: 1;
-            padding: clamp(1.2rem, 4vw, 2.8rem);
+            margin-top: clamp(1.2rem, 4vw, 2.4rem);
+            margin-bottom: clamp(1.4rem, 5vw, 3rem);
+            padding: clamp(1.4rem, 4vw, 2.8rem);
             display: grid;
-            gap: 1.9rem;
-        }
-
-        .viewer {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr);
-            gap: clamp(1.35rem, 3vw, 2rem);
-            align-items: stretch;
-        }
-
-        @media (min-width: 1024px) {
-            .viewer {
-                grid-template-columns: minmax(0, 1.3fr) auto minmax(0, 1.3fr);
-                align-items: center;
-            }
-        }
-
-        .panel {
-            border-radius: 1rem;
-            padding: clamp(1rem, 2.2vw, 1.4rem);
-            box-shadow: 0 30px 45px -40px rgba(12, 50, 92, 0.75);
-            background-color: #ffffff;
-            display: grid;
-            gap: 1rem;
-            border: 1px solid rgba(15, 76, 129, 0.12);
-        }
-
-        .panel h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: #103f7a;
-            letter-spacing: 0.01em;
-            text-align: center;
-        }
-
-        .panel iframe {
-            width: 100%;
-            min-height: 420px;
-            height: min(82vh, 680px);
-            border: 1px solid rgba(15, 76, 129, 0.18);
-            border-radius: 0.65rem;
-            box-shadow: inset 0 0 0 1px rgba(15, 37, 71, 0.06);
-            background-color: #fdfdfd;
-        }
-
-        .panel .placeholder {
-            padding: clamp(1.5rem, 3vw, 2.2rem);
-            border: 2px dashed rgba(15, 76, 129, 0.28);
-            border-radius: 0.75rem;
-            text-align: center;
-            color: #46566c;
-            background: rgba(15, 76, 129, 0.03);
+            gap: clamp(1.4rem, 3vw, 2rem);
+            background: var(--surface);
+            border-radius: 1.5rem;
+            box-shadow: 0 34px 70px -40px rgba(14, 58, 93, 0.55);
+            border: 1px solid rgba(14, 58, 93, 0.12);
         }
 
         .nav {
@@ -101,28 +71,37 @@
             align-items: center;
             gap: 1rem;
             flex-wrap: wrap;
+            background: var(--surface-alt);
+            border: 1px solid var(--border-subtle);
+            border-radius: 1rem;
+            padding: 0.75rem clamp(1rem, 3vw, 1.5rem);
         }
 
         .nav button {
-            background: linear-gradient(135deg, #1c2c54, #0f4c81);
-            color: white;
-            border: none;
-            border-radius: 2rem;
-            padding: 0.65rem 1.5rem;
-            font-size: 1rem;
+            background: var(--brand-primary);
+            color: #ffffff;
+            border: 1px solid var(--brand-primary);
+            border-radius: 999px;
+            padding: 0.55rem 1.4rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .nav button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            box-shadow: none;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .nav button:not(:disabled):hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px -14px rgba(15, 76, 129, 0.8);
+            background: var(--brand-accent);
+            border-color: var(--brand-accent);
+            box-shadow: 0 10px 20px -14px rgba(31, 120, 180, 0.65);
+        }
+
+        .nav button:disabled {
+            background: #d5dbe6;
+            border-color: #d5dbe6;
+            color: #64748b;
+            box-shadow: none;
+            cursor: not-allowed;
         }
 
         .nav .summary {
@@ -131,85 +110,166 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #0f4c81;
-            padding: 0;
-            border: none;
-            box-shadow: none;
-            background: none;
+            color: var(--brand-primary);
+            text-transform: none;
         }
 
         .summary strong {
             display: block;
             width: 100%;
             text-align: center;
-            font-size: 1.05rem;
-            color: #0f4c81;
+            white-space: pre-wrap;
+        }
+
+        .viewer {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: clamp(1.4rem, 3vw, 2.2rem);
+            align-items: stretch;
+        }
+
+        @media (min-width: 1024px) {
+            .viewer {
+                grid-template-columns: minmax(0, 1.3fr) auto minmax(0, 1.3fr);
+                align-items: stretch;
+            }
+        }
+
+        .panel {
+            border-radius: 1.25rem;
+            padding: clamp(1rem, 2.1vw, 1.5rem);
+            background: var(--surface);
+            display: grid;
+            gap: 1rem;
+            border: 1px solid rgba(14, 58, 93, 0.12);
+            box-shadow: 0 22px 46px -36px rgba(14, 58, 93, 0.3);
+        }
+
+        .panel h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--brand-primary);
+            letter-spacing: 0.02em;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .panel h2 span {
+            display: block;
+            margin-top: 0.2rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .panel iframe {
+            width: 100%;
+            min-height: 420px;
+            height: min(82vh, 700px);
+            border: 1px solid rgba(14, 58, 93, 0.24);
+            border-radius: 0.75rem;
+            background-color: #fdfefe;
+            box-shadow: inset 0 0 0 1px rgba(14, 58, 93, 0.08);
+        }
+
+        .panel .placeholder {
+            padding: clamp(1.5rem, 3vw, 2.25rem);
+            border: 1px dashed rgba(14, 58, 93, 0.28);
+            border-radius: 0.85rem;
+            text-align: center;
+            color: var(--text-muted);
+            background: rgba(14, 58, 93, 0.04);
+        }
+
+        .direction {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            color: var(--brand-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .direction .arrow {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .direction p {
+            margin: 0;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @media (min-width: 1024px) {
+            .direction {
+                flex-direction: column;
+                gap: 0.9rem;
+                height: 100%;
+                padding: 0 0.75rem;
+            }
+
+            .direction::before,
+            .direction::after {
+                content: "";
+                display: block;
+                width: 2px;
+                height: clamp(80px, 12vw, 140px);
+                background: linear-gradient(
+                    to bottom,
+                    transparent,
+                    rgba(14, 58, 93, 0.2),
+                    transparent
+                );
+                border-radius: 999px;
+            }
+
+            .direction::before {
+                margin-bottom: -0.3rem;
+            }
+
+            .direction::after {
+                margin-top: -0.3rem;
+            }
+
+            .direction .arrow {
+                font-size: 2rem;
+                width: 3.2rem;
+                height: 3.2rem;
+                border-radius: 999px;
+                display: grid;
+                place-items: center;
+                border: 1px solid rgba(14, 58, 93, 0.2);
+                background: rgba(14, 58, 93, 0.08);
+            }
+
+            .direction p {
+                font-size: 0.82rem;
+                text-transform: uppercase;
+                letter-spacing: 0.16em;
+            }
         }
 
         footer {
             width: min(1280px, 100%);
-            padding: 1rem clamp(1rem, 4vw, 2rem);
-            color: #52606d;
-            font-size: 0.85rem;
+            padding: clamp(0.9rem, 3vw, 1.6rem);
+            color: var(--text-muted);
+            font-size: 0.8rem;
             text-align: center;
         }
 
         a {
             color: inherit;
         }
-        .direction {
-            display: none;
-        }
-
-        .direction .arrow {
-            display: grid;
-            place-items: center;
-            color: #0f4c81;
-            font-size: 2.6rem;
-        }
-
-        .direction p {
-            margin-top: 0.8rem;
-            text-align: center;
-            color: #3b4d65;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        @media (min-width: 1024px) {
-            .direction {
-                display: grid;
-                justify-items: center;
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 1023px) {
-            .direction {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #0f4c81;
-                font-weight: 600;
-                gap: 0.5rem;
-                padding: 0.3rem 0;
-            }
-
-            .direction .arrow {
-                font-size: 2.2rem;
-            }
-
-            .direction p {
-                margin: 0;
-            }
-        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Health Alliance Policy to Checklist</h1>
+        <h1>Health Alliance <span class="accent">Policy to Checklist</span></h1>
     </header>
 
     <main>
@@ -223,15 +283,15 @@
 
         <div class="viewer">
             <section class="panel">
-                <h2>Original PDF</h2>
+                <h2>Original Policy<span>Source PDF</span></h2>
                 <div id="original-view"></div>
             </section>
             <div class="direction" aria-hidden="true">
-                <div class="arrow">➜</div>
-                <p>transforms into</p>
+                <div class="arrow">→</div>
+                <p>Checklist Conversion</p>
             </div>
             <section class="panel">
-                <h2>Checklist Version</h2>
+                <h2>Checklist Output<span>Checklist PDF</span></h2>
                 <div id="checklist-view"></div>
             </section>
         </div>
@@ -257,7 +317,7 @@
             wrapper.innerHTML = `
                 <strong>${label}</strong>
                 <p>${path}</p>
-                <p><em>File not found – drop it into this repo to enable preview.</em></p>
+                <p><em>File not available. Confirm the PDF exists at the path above.</em></p>
             `;
             container.replaceChildren(wrapper);
         }
